@@ -10,10 +10,10 @@ app = flask.Flask(__name__)
 secret_key = '#FF8723#'
 token = ''
 
-#commit antes de fechar
-#nova forma para as playlist
-#criar os id todos da mesma forma
-#meter a playlist na detail artist
+# commit antes de fechar
+# nova forma para as playlist
+# criar os id todos da mesma forma
+# meter a playlist na detail artist
 
 
 StatusCodes = {
@@ -25,14 +25,15 @@ StatusCodes = {
 
 def db_connection():
     db = psycopg2.connect(
-        user = 'projeto_bd',
-        password = 'password',
-        host = '127.0.0.1',
-        port = '5432',
-        database = 'spotivinho_DB'
+        user='projeto_bd',
+        password='password',
+        host='127.0.0.1',
+        port='5432',
+        database='spotivinho_DB'
     )
 
     return db
+
 
 @app.route('/')
 def landing_page():
@@ -52,7 +53,6 @@ formatter = logging.Formatter(
     '%(asctime)s [%(levelname)s]:  %(message)s', '%H:%M:%S')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
-
 
 
 # registar novo consumidor
@@ -118,7 +118,6 @@ def registration():
     return flask.jsonify(response)
 
 
-
 # registar novo artista
 @app.route('/spotivinho_DB/user/artista', methods=['POST'])
 def novo_artista():
@@ -128,7 +127,7 @@ def novo_artista():
     conn = db_connection()
     cur = conn.cursor()
 
-    #logger.debug(f'POST /spotivinho_DB/user/artista - payload: {payload}')
+    # logger.debug(f'POST /spotivinho_DB/user/artista - payload: {payload}')
 # verifica se está tudo na payload
     if "username" not in payload or "password" not in payload or "email" not in payload or "nome" not in payload or "idade" not in payload or "genero" not in payload or "nib" not in payload or "pais" not in payload or "data_nasc" not in payload or "label_id" not in payload or "token" not in payload:
         response = {
@@ -172,7 +171,7 @@ def novo_artista():
                 'status': StatusCodes['api_error'], 'results': 'Username já existe!'}
             conn.close()
             return flask.jsonify(response)
-            
+
         else:
             # inserir novo artista
             cur.execute("BEGIN TRANSACTION")
@@ -233,7 +232,7 @@ def user_auth():
 
         else:
             response = {
-                'status': StatusCodes['api_error'], 'results': 'Credenciais incorretas.'} 
+                'status': StatusCodes['api_error'], 'results': 'Credenciais incorretas.'}
             conn.close()
             return flask.jsonify(response)
 
@@ -251,7 +250,6 @@ def user_auth():
     return flask.jsonify(response)
 
 
-
 # adicionar musica cheka
 @app.route('/spotivinho_DB/song', methods=['POST'])
 def add_song():
@@ -262,7 +260,7 @@ def add_song():
     cur = conn.cursor()
 
     logger.debug(f'POST /spotivinho_DB/song - payload: {payload}')
-    
+
     # falta um if para verificar se existe o campo outros artistas, de modo
     if "duracao" not in payload or "pub_data" not in payload or "genero" not in payload or "label_id" not in payload or "titulo" not in payload or "audio" not in payload or "album_album_id" not in payload or 'token' not in payload:
         response = {
@@ -279,13 +277,12 @@ def add_song():
         response = {'status': StatusCodes['api_error'],
                     'results': 'Utilizador não tem permissão.'}
         return flask.jsonify(response)
-    
-    
+
     statement = """INSERT into musica (ismn,duracao,pub_data,genero,label_id,titulo,audio,album_album_id,artista_utilizador_user_id) 
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
     num_random = str(random.randint(0, 999999))
     id = f"{payload['titulo']}{num_random}"
-    print("id - ",id)
+    print("id - ", id)
     try:
         artista_id = str(decode['user_id'])
         values = (str(id), payload["duracao"], payload["pub_data"], payload["genero"],
@@ -312,7 +309,9 @@ def add_song():
 
 # até aqui podes só 100% copiar
 
-# adiconar_album, bora pensar numa boa forma para fazer todos os ids n perdi muito tempo nesta
+# adiconar_album, bora pensar numa boa forma para fazer todos os ids, falta fazer a tracklist corretamente
+
+
 @app.route('/spotivinho_DB/album', methods=['POST'])
 def add_album():
     logger.info('POST /spotivinho_DB/album')
@@ -324,7 +323,7 @@ def add_album():
         response = {'status': StatusCodes['api_error'],
                     'results': 'Missing required fields'}
         return flask.jsonify(response)
-    token  = payload['token']
+    token = payload['token']
     decode = jwt.decode(token, secret_key, algorithms=['HS256'])
     if decode['permissao'] == "artista":
         pass
@@ -415,7 +414,7 @@ def search_song(titulo):
     WHERE musica.titulo LIKE %s || %s || %s"""
 
     try:
-        cur.execute(statement, (var, titulo,var))
+        cur.execute(statement, (var, titulo, var))
         rows = cur.fetchall()
         Results = []
 
@@ -446,8 +445,10 @@ def search_song(titulo):
 # ---------TIAGO
 # detalhes artista
 # neste momento só mostra todas as musicas e albuns da sua autoria falta meter playlist
-#este nem quis testar, sei que falta aqui muita cena, mas so me parece que vale a pena resolver
+# este nem quis testar, sei que falta aqui muita cena, mas so me parece que vale a pena resolver
 # depois de definirmos como vamos guardar as tracklis
+
+
 @app.route('/spotivinho_DB/artista_info/<artist_id>', methods=['GET'])
 def detail_artist(artist_id):
     logger.info('GET /spotivinho_DB/artista_info/<artist_id>')
@@ -470,19 +471,19 @@ def detail_artist(artist_id):
         logger.debug(rows)
         Results = []
         content = {
-                    'Artista': rows[0][0],
-                    'Data nascimento': rows[0][3],
-                    'Idade': rows[0][4],
-                    'Pais': rows[0][5],}
+            'Artista': rows[0][0],
+            'Data nascimento': rows[0][3],
+            'Idade': rows[0][4],
+            'Pais': rows[0][5], }
         Results.append(content)
         for row in rows:
             logger.debug(row)
             content = {
-                       'Musicas': row[1],  # nome ou id??
-                       'Albuns': row[2],
-                       # falta meter playlist!!!!!!!!!!!!!!
-                       'Label': row[6]
-                       }
+                'Musicas': row[1],  # nome ou id??
+                'Albuns': row[2],
+                # falta meter playlist!!!!!!!!!!!!!!
+                'Label': row[6]
+            }
             Results.append(content)
         response = {'status': StatusCodes['success'], 'results': Results}
 
@@ -512,13 +513,13 @@ def subscribe():
     logger.debug(f'POST /spotivinho_DB/subscription - payload: {payload}')
 
     if "period" not in payload or "cards" not in payload or "token" not in payload:
-            response = {'status': StatusCodes['api_error'],
-                        'results': 'Missing required fields.'}
-            return flask.jsonify(response)
-    
+        response = {'status': StatusCodes['api_error'],
+                    'results': 'Missing required fields.'}
+        return flask.jsonify(response)
+
     token = payload['token']
     # verificar login efectuado
-   
+
     decode = jwt.decode(token, secret_key, algorithms=['HS256'])
     if decode['permissao'] == "consumidor":
         pass
@@ -527,12 +528,9 @@ def subscribe():
                     'results': 'Utilizador não tem permissão.'}
         conn.close()
         return flask.jsonify(response)
-    
 
     # PLANOS DE SUBSCRIÇAO -->(month 7€, quarter 21€, semester 42€)
 
-    
-    
     statement = "SELECT customer_id,valor FROM pre_paid WHERE pre_paid_id = %s"
 
     try:
@@ -541,112 +539,232 @@ def subscribe():
                         'results': 'Período deve ser month, quarter, semester.'}
             conn.close()
             return flask.jsonify(response)
-        
 
         cartoes = str(payload['cards']).split(',')
         saldo_total = 0
 
-        logger.debug(cartoes)
+        logger.debug(f'id de cartoes a ser utilizados - {cartoes}')
 
-        #verfica se cartao tem saldo suficiente
+        # verfica se cartao tem saldo suficiente
         if payload['period'] == "month":
             valor_necessario = 7
         elif payload['period'] == "quarter":
             valor_necessario = 21
-        elif payload['period'] == "semester" :
+        elif payload['period'] == "semester":
             valor_necessario = 42
-        
-        
-        for item in cartoes:
-            logger.debug(item)
 
-            cur.execute(statement,(item,))
+        for item in cartoes:
+            # logger.debug(item)
+
+            cur.execute(statement, (item,))
             verify_card = cur.fetchall()
             saldo_total += int(verify_card[0][1])
 
-            logger.debug(saldo_total)
+            logger.debug(f'saldo total de todos os cartoes - {saldo_total}')
 
-            #verificar estado do cartao (novo ou utilizado)
-            if verify_card[0] == 'novo' or verify_card[0] == decode['user_id']:
+            # verificar estado do cartao (novo ou utilizado)
+            # logger.debug(verify_card[0][0])
+            if verify_card[0][0] == 'novo' or verify_card[0][0] == decode['user_id']:
                 pass
             else:
                 response = {'status': StatusCodes['api_error'],
                             'results': 'Cartão inválido.'}
                 conn.close()
                 return flask.jsonify(response)
-            
-            
-        
-        if valor_necessario < saldo_total:
+
+        if saldo_total < valor_necessario:
             response = {'status': StatusCodes['api_error'],
                         'results': 'Saldo insuficiente.'}
             conn.close()
             return flask.jsonify(response)
-            
+
         statement1 = "SELECT status FROM consumidor WHERE utilizador_user_id = %s"
         values1 = decode['user_id']
-    
-        cur.execute(statement1,(values1,))
+
+        cur.execute(statement1, (values1,))
         estado = cur.fetchone()
 
         if estado == "regular":
-            pass
+            if payload['period'] == "month":
+                data_atual = time.localtime()
+                ano_futuro = data_atual.tm_year
+                mes_futuro = (data_atual.tm_mon + 1) % 12
+                if mes_futuro == 0:
+                    mes_futuro = 12
+                    ano_futuro += 1
 
-        if payload['period'] == "month":
-            data_atual =time.localtime()
-            ano_futuro = data_atual.tm_year
-            mes_futuro = (data_atual.tm_mon + 1) % 12
-            if mes_futuro == 0:
-                mes_futuro = 12
-                ano_futuro += 1
-            
-            # data_futura = data do fim da subscriçao
-            data_futura = "{:04d}-{:02d}-{:02d}".format(ano_futuro, mes_futuro, data_atual.tm_mday)
+                # data_futura = data do fim da subscriçao
+                data_futura = "{:04d}-{:02d}-{:02d}".format(
+                    ano_futuro, mes_futuro, data_atual.tm_mday)
 
-            statement2 = "UPDATE consumidor SET status = %s WHERE utilizador_user_id = %s"
-            values = (data_futura, decode['user_id'])
+                statement2 = "UPDATE consumidor SET status = %s WHERE utilizador_user_id = %s"
+                values = (data_futura, decode['user_id'])
 
-            logger.debug(values)
+                logger.debug(f'values - {values}')
 
-            cur.execute("BEGIN TRANSACTION")
-            cur.execute(statement2,values)
+                cur.execute("BEGIN TRANSACTION")
+                cur.execute(statement2, values)
 
-            logger.debug(valor_necessario)
+                # logger.debug(valor_necessario)
 
-            for i in cartoes:
-                cur.execute(statement,(i,))
-                valor_card = cur.fetchall()
-                if valor_card[0][1] >= valor_necessario:
-                    saldo_final = valor_card[0][1] - valor_necessario
-                    break
-                else:
-                    valor_necessario = valor_necessario - valor_card[0][1]
-                    valor_card[0][1] = 0
-                    cur.execute("")
-            
-        
+                for i in cartoes:
+                    cur.execute(statement, (i,))
+                    logger.debug(f'id do cartao - {i}')
+                    valor_card = cur.fetchall()
+                    if valor_card[0][1] > valor_necessario:
+                        saldo_final = valor_card[0][1] - valor_necessario
+                        cur.execute(
+                            "UPDATE pre_paid SET valor = %s WHERE pre_paid_id = %s", (saldo_final, i))
+                        break
+                    elif valor_card[0][1] == valor_necessario:
+                        print("cheguei")
+                        saldo_final = saldo_total - valor_necessario
+                        cur.execute(
+                            "DELETE FROM pre_paid WHERE pre_paid_id = %s", (i,))
+                        break
+                    else:
+                        valor_necessario = valor_necessario - valor_card[0][1]
+                        valor_card[0][1] = 0
+                        cur.execute(
+                            "DELETE FROM pre_paid WHERE pre_paid_id = %s", (i,))
+
+                num_random = str(random.randint(0, 999999))
+                id = f"{payload['period']}{num_random}"
+
+                data_atual_formatada = time.strftime("%Y-%m-%d", data_atual)
+
+                statement3 = "INSERT INTO historico_sub (data_compra, saldo_na_data, saldo_pos_compra, consumidor_utilizador_user_id, sub_period, sub_id) VALUES (%s, %s, %s, %s, %s, %s)"
+                values3 = (data_atual_formatada, saldo_total, saldo_final,
+                           decode['user_id'], payload['period'], id)
+
+                cur.execute(statement3, values3)
+            elif payload['period'] == "quarter":
+                data_atual = time.localtime()
+                ano_futuro = data_atual.tm_year
+                mes_futuro = (data_atual.tm_mon + 3) % 12
+                if mes_futuro == 0:
+                    mes_futuro = 12
+                    ano_futuro += 1
+
+                # data_futura = data do fim da subscriçao
+                data_futura = "{:04d}-{:02d}-{:02d}".format(
+                    ano_futuro, mes_futuro, data_atual.tm_mday)
+
+                statement2 = "UPDATE consumidor SET status = %s WHERE utilizador_user_id = %s"
+                values = (data_futura, decode['user_id'])
+
+                logger.debug(f'values - {values}')
+
+                cur.execute("BEGIN TRANSACTION")
+                cur.execute(statement2, values)
+
+                # logger.debug(valor_necessario)
+
+                for i in cartoes:
+                    cur.execute(statement, (i,))
+                    logger.debug(f'id do cartao - {i}')
+                    valor_card = cur.fetchall()
+                    if valor_card[0][1] > valor_necessario:
+                        saldo_final = valor_card[0][1] - valor_necessario
+                        cur.execute(
+                            "UPDATE pre_paid SET valor = %s WHERE pre_paid_id = %s", (saldo_final, i))
+                        break
+                    elif valor_card[0][1] == valor_necessario:
+                        print("cheguei")
+                        saldo_final = saldo_total - valor_necessario
+                        cur.execute(
+                            "DELETE FROM pre_paid WHERE pre_paid_id = %s", (i,))
+                        break
+                    else:
+                        valor_necessario = valor_necessario - valor_card[0][1]
+                        valor_card[0][1] = 0
+                        cur.execute(
+                            "DELETE FROM pre_paid WHERE pre_paid_id = %s", (i,))
+
+                num_random = str(random.randint(0, 999999))
+                id = f"{payload['period']}{num_random}"
+
+                data_atual_formatada = time.strftime("%Y-%m-%d", data_atual)
+
+                statement3 = "INSERT INTO historico_sub (data_compra, saldo_na_data, saldo_pos_compra, consumidor_utilizador_user_id, sub_period, sub_id) VALUES (%s, %s, %s, %s, %s, %s)"
+                values3 = (data_atual_formatada, saldo_total, saldo_final,
+                           decode['user_id'], payload['period'], id)
+
+                cur.execute(statement3, values3)
+            elif payload['period'] == "semester":
+                data_atual = time.localtime()
+                ano_futuro = data_atual.tm_year
+                mes_futuro = (data_atual.tm_mon + 6) % 12
+                if mes_futuro == 0:
+                    mes_futuro = 12
+                    ano_futuro += 1
+
+                # data_futura = data do fim da subscriçao
+                data_futura = "{:04d}-{:02d}-{:02d}".format(
+                    ano_futuro, mes_futuro, data_atual.tm_mday)
+
+                statement2 = "UPDATE consumidor SET status = %s WHERE utilizador_user_id = %s"
+                values = (data_futura, decode['user_id'])
+
+                logger.debug(f'values - {values}')
+
+                cur.execute("BEGIN TRANSACTION")
+                cur.execute(statement2, values)
+
+                # logger.debug(valor_necessario)
+
+                for i in cartoes:
+                    cur.execute(statement, (i,))
+                    logger.debug(f'id do cartao - {i}')
+                    valor_card = cur.fetchall()
+                    if valor_card[0][1] > valor_necessario:
+                        saldo_final = valor_card[0][1] - valor_necessario
+                        cur.execute(
+                            "UPDATE pre_paid SET valor = %s WHERE pre_paid_id = %s", (saldo_final, i))
+                        break
+                    elif valor_card[0][1] == valor_necessario:
+                        print("cheguei")
+                        saldo_final = saldo_total - valor_necessario
+                        cur.execute(
+                            "DELETE FROM pre_paid WHERE pre_paid_id = %s", (i,))
+                        break
+                    else:
+                        valor_necessario = valor_necessario - valor_card[0][1]
+                        valor_card[0][1] = 0
+                        cur.execute(
+                            "DELETE FROM pre_paid WHERE pre_paid_id = %s", (i,))
+
+                num_random = str(random.randint(0, 999999))
+                id = f"{payload['period']}{num_random}"
+
+                data_atual_formatada = time.strftime("%Y-%m-%d", data_atual)
+
+                statement3 = "INSERT INTO historico_sub (data_compra, saldo_na_data, saldo_pos_compra, consumidor_utilizador_user_id, sub_period, sub_id) VALUES (%s, %s, %s, %s, %s, %s)"
+                values3 = (data_atual_formatada, saldo_total, saldo_final,
+                           decode['user_id'], payload['period'], id)
+
+                cur.execute(statement3, values3)
+
         conn.commit()
 
+        response = {'status': StatusCodes['success'],
+                    'results': f'subscription_id: {id}'}
 
-        
-        response = {'status':StatusCodes['success'],
-                    'results':'subscription_id'
-                    }
     except (Exception, psycopg2.DatabaseError) as error:
         logger.error(f'POST /spotivinho_DB/subscription - error: {error}')
         response = {'status': StatusCodes['internal_error'],
                     'errors': str(error)}
-        
+
         conn.rollback()
 
     finally:
         if conn is not None:
             conn.close()
-    
+
     return flask.jsonify(response)
 
 
-# create playlist
+# create playlist falta verificar condição premium
 @app.route('/spotivinho_DB/playlist', methods=['POST'])
 def add_playlist():
     logger.info('POST /spotivinho_DB/playlist')
@@ -671,8 +789,9 @@ def add_playlist():
 
     statement = "SELECT status FROM consumidor WHERE utilizador_user_id = %s"
     statement1 = "SELECT * FROM musica WHERE ismn = %s"
-    statement2 = """INSERT INTO playlist (playlist_id,titulo,tracklist,duracao,descricao,consumidor_utilizador_user_id,visibility ) 
-    VALUES (%s,%s,%s,%s,%s,%s,%s)"""
+    statement2 = """INSERT INTO playlist (playlist_id,titulo,duracao,descricao,consumidor_utilizador_user_id,visibility ) 
+    VALUES (%s,%s,%s,%s,%s,%s)"""
+    statement3 = "INSERT INTO tracklist (playlist_id,ismn) VALUES (%s,%s)"
     values = decode['user_id']
 
     conn = db_connection()
@@ -700,23 +819,26 @@ def add_playlist():
             return flask.jsonify(response)
 
         # check se todos os id estão na tabela música
+        playlist_id = "@" + payload['titulo']
+        values = (playlist_id, payload['titulo'], payload['duracao'],
+                  payload['descricao'], decode['user_id'], payload['visibility'])
+
+        cur.execute("BEGIN TRANSACTION")
+        # insere a playlist em playlist
+        cur.execute(statement2, values)
         for item in tracklist:
             values = item
             cur.execute(statement1, (values,))
             if cur.fetchone():
-                pass
+                values = (playlist_id, item)
+                cur.execute(statement3, values)
             else:
+                conn.rollback()
                 response = {'status': StatusCodes['api_error'],
                             'results': f'a música com o id - {item} não está presente na base de dados.'}
                 conn.close()
                 return flask.jsonify(response)
 
-        playlist_id = "@" + payload['titulo']
-        values = (playlist_id, payload['titulo'], payload['tracklist'], payload['duracao'],
-                  payload['descricao'], decode['user_id'], payload['visibility'])
-
-        # insere a playlist em playlist
-        cur.execute(statement2, values)
         response = {'status': StatusCodes['success'],
                     'results': 'nova playlist!!!!!'}
         conn.commit()
@@ -746,7 +868,7 @@ def add_card():
     payload = flask.request.get_json()
 
     logger.debug(f'POST /spotivinho_DB/card - payload: {payload}')
-    
+
     # verifica se todos os campos necessários estão na payload
     if "valor" not in payload or "expiration_date" not in payload or "quantidade" not in payload or 'token' not in payload:
         response = {
@@ -754,8 +876,8 @@ def add_card():
         conn.close()
         return flask.jsonify(response)
     # verifica se é admin
-    
-    token  = payload['token']
+
+    token = payload['token']
     decode = jwt.decode(token, secret_key, algorithms=['HS256'])
     if decode['permissao'] == "administrador":
         pass
@@ -765,13 +887,12 @@ def add_card():
         conn.close()
         return flask.jsonify(response)
 
-
     if int(payload['valor'])not in (10, 25, 50):
         response = {'status': StatusCodes['api_error'],
                     'results': 'valor dos pre_paid_cards tem que ser 10, 25 ou 50.'}
         conn.close()
         return flask.jsonify(response)
-    
+
     statement = "INSERT into pre_paid (pre_paid_id,valor,administrador_utilizador_user_id,expiration_date) VALUES(%s,%s,%s,%s)"
     try:
         # para cada pre_paid criado
@@ -810,31 +931,79 @@ def add_card():
     return flask.jsonify(response)
 
 
-#play song falta fazer 
-@app.route('/spotivinho_DB/<song_id>', methods = ['PUT'])
+# play song falta fazer
+@app.route('/spotivinho_DB/<song_id>', methods=['PUT'])
 def play_song(song_id):
     logger.info('POST /spotivinho_DB/<song_id>')
     payload = flask.request.get_json()
-#falta dar connect
     logger.debug(f'POST /spotivinho_DB/<song_id> - payload: {payload}')
     if 'token' not in payload:
-        response = {'status':StatusCodes['api_error'],
-                    'results':'token não está na payload'}
+        response = {'status': StatusCodes['api_error'],
+                    'results': 'token não está na payload'}
+        conn.close()
+        return flask.jsonify(response)
+    conn = db_connection()
+    cur = conn.cursor()
 
     token = payload['token']
-    if token == '':
-        response = {'status': StatusCodes['api_error'],
-                    'results': 'sessão iniciada para tocar musica por favor!.'}
-        return flask.jsonify(response)
-
     decode = jwt.decode(token, secret_key, algorithms=['HS256'])
-
-    if decode['permissao'] == "consumidor":
+    user_id = decode['user_id']
+    if decode['permissao'] == 'consumidor':
         pass
     else:
         response = {'status': StatusCodes['api_error'],
-                    'results': 'Utilizador não tem permissão.'}
+                    'results': 'sessão iniciada como consumidor para tocar musica por favor!.'}
+        conn.close()
         return flask.jsonify(response)
+    statement = "UPDATE musica SET streams = streams + 1 WHERE ismn = %s"
+    statement1 = "SELECT (musica_ismn) FROM historico_stream WHERE consumidor_utilizador_user_id = %s AND data >= %s AND %s >= data"
+
+    data_atual = time.localtime()
+    ano = data_atual.tm_year
+    mes = (data_atual.tm_mon - 1) % 12
+    if mes == 0:
+        mes = 12
+        ano -= 1
+
+    data = "{:04d}-{:02d}-{:02d}".format(
+        data_atual.tm_year, data_atual.tm_mon, data_atual.tm_mday)
+    
+    um_mes_atras = "{:04d}-{:02d}-{:02d}".format(
+        ano, mes, data_atual.tm_mday)
+    
+    values = (user_id, um_mes_atras, data)
+    hist_stream(data, song_id, user_id)
+    response ={'status': StatusCodes['success'],
+               'results':"oi"}
+    try:
+        cur.execute(statement1, values)
+        print(cur.fetchall())
+        cur.execute(statement, (song_id,))
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        logger.error(f'POST /spotivinho_DB/card - error: {error}')
+        response = {
+            'status': StatusCodes['internal_error'], 'errors': str(error)}
+
+        conn.rollback()
+
+    finally:
+        if conn is not None:
+            conn.close()
+
+    return flask.jsonify(response)
+
+
+def hist_stream(data, ismn, user_id):
+    conn = db_connection()
+    cur = conn.cursor() 
+    statement = "INSERT INTO historico_stream (data, musica_ismn, consumidor_utilizador_user_id) VALUES (%s, %s, %s)"
+    values = (data, ismn, user_id)
+    cur.execute(statement, values)
+    conn.commit()
+    conn.close()
+    return
+
 
 # ---------MOREIRA
 def role(user_id):
