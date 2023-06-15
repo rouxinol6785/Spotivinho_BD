@@ -934,9 +934,9 @@ def add_card():
 # play song falta fazer
 @app.route('/spotivinho_DB/<song_id>', methods=['PUT'])
 def play_song(song_id):
-    logger.info('POST /spotivinho_DB/<song_id>')
+    logger.info('PUT /spotivinho_DB/<song_id>')
     payload = flask.request.get_json()
-    logger.debug(f'POST /spotivinho_DB/<song_id> - payload: {payload}')
+    logger.debug(f'PUT /spotivinho_DB/<song_id> - payload: {payload}')
     if 'token' not in payload:
         response = {'status': StatusCodes['api_error'],
                     'results': 'token não está na payload'}
@@ -956,7 +956,32 @@ def play_song(song_id):
         conn.close()
         return flask.jsonify(response)
     statement = "UPDATE musica SET streams = streams + 1 WHERE ismn = %s"
-    statement1 = "SELECT (musica_ismn) FROM historico_stream WHERE consumidor_utilizador_user_id = %s AND data >= %s AND %s >= data"
+    statement1 = """CREATE OR REPLACE FUNCTION atualizar_top_10_playlist() RETURNS TRIGGER AS $$
+DECLARE
+  musica RECORD;
+BEGIN
+  -- Cria a playlist do 0 sempre que há uma música nova
+  DELETE FROM top10_playlist WHERE user_id = %s;
+
+  -- Obtem as 10 musicas mais tocadas no ultimo mês
+  FOR musica IN (
+    SELECT musica_ismn, COUNT(*) AS total_stream
+    FROM historico_stream
+    WHERE consumidor_utilizador_user_id = %s
+      AND data >= %s
+      AND data <= %s
+    GROUP BY musica_ismn
+    ORDER BY total_stream DESC
+    LIMIT 10
+  ) LOOP
+    -- itera para cada musica retornada, adicionando-a à playlist_top10
+    INSERT INTO top10_playlist (user_id, ismn, streams_last_month)
+    VALUES (%s, musica.musica_ismn, musica.total_stream);
+  END LOOP;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;"""
 
     data_atual = time.localtime()
     ano = data_atual.tm_year
@@ -967,21 +992,22 @@ def play_song(song_id):
 
     data = "{:04d}-{:02d}-{:02d}".format(
         data_atual.tm_year, data_atual.tm_mon, data_atual.tm_mday)
-    
+
     um_mes_atras = "{:04d}-{:02d}-{:02d}".format(
         ano, mes, data_atual.tm_mday)
-    
-    values = (user_id, um_mes_atras, data)
+
+    values = (user_id,user_id,um_mes_atras, data,user_id)
     hist_stream(data, song_id, user_id)
-    response ={'status': StatusCodes['success'],
-               'results':"oi"}
+
     try:
         cur.execute(statement1, values)
-        print(cur.fetchall())
         cur.execute(statement, (song_id,))
+        conn.commit()
+        response = {'status': StatusCodes['success'],
+                    'results': "oi"}
 
     except (Exception, psycopg2.DatabaseError) as error:
-        logger.error(f'POST /spotivinho_DB/card - error: {error}')
+        logger.error(f'PUT /spotivinho_DB/card - error: {error}')
         response = {
             'status': StatusCodes['internal_error'], 'errors': str(error)}
 
@@ -994,15 +1020,39 @@ def play_song(song_id):
     return flask.jsonify(response)
 
 
+@app.route('/spotivinho_DB/report',methods = ['GET'])
+def monthly_report():
+    logger.info('GET /spotivinho_DB/report')
+
+    conn = db_connection()
+    cur = conn.cursor()
+
+    statement =  """SELECT DATE_PART('month', historico_stream.data) AS mes, musica.genero, COUNT(*) AS total_streams
+                    FROM historico_stream 
+                    JOIN musica ON historico_stream.musica_ismn = musica.ismn
+                    GROUP BY mes, musica.genero
+                    ORDER BY mes, total_streams DESC;"""
+    cur.execute(statement)
+    val = cur.fetchall()
+    logger.debug(val)
+    response = {'status':StatusCodes,'results':val}
+    return flask.jsonify(response)
+
 def hist_stream(data, ismn, user_id):
     conn = db_connection()
-    cur = conn.cursor() 
-    statement = "INSERT INTO historico_stream (data, musica_ismn, consumidor_utilizador_user_id) VALUES (%s, %s, %s)"
-    values = (data, ismn, user_id)
-    cur.execute(statement, values)
-    conn.commit()
-    conn.close()
-    return
+    cur = conn.cursor()
+    try:
+        cur.execute("BEGIN TRANSACTION")
+        statement = "INSERT INTO historico_stream (data, musica_ismn, consumidor_utilizador_user_id) VALUES (%s, %s, %s)"
+        values = (data, ismn, user_id)
+        cur.execute(statement, values)
+        conn.commit()
+    except :
+        conn.rollback()
+    finally:
+        if conn is not None:
+            conn.close()
+    return 
 
 
 # ---------MOREIRA
