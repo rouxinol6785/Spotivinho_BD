@@ -1,0 +1,169 @@
+CREATE TABLE utilizador (
+	user_id	 VARCHAR(512),
+	username VARCHAR(512),
+	password VARCHAR(512),
+	email	 VARCHAR(512),
+	PRIMARY KEY(user_id)
+);
+
+CREATE TABLE administrador (
+	utilizador_user_id VARCHAR(512),
+	PRIMARY KEY(utilizador_user_id)
+);
+
+CREATE TABLE consumidor (
+	nome		 VARCHAR(512),
+	data_nasc		 DATE,
+	pais		 VARCHAR(512),
+	genero		 VARCHAR(512),
+	status		 VARCHAR(512) DEFAULT 'regular',
+	utilizador_user_id VARCHAR(512),
+	PRIMARY KEY(utilizador_user_id)
+);
+
+CREATE TABLE artista (
+	nome		 VARCHAR(512),
+	idade		 INTEGER,
+	nib		 BIGINT,
+	genero		 VARCHAR(512),
+	pais		 VARCHAR(512),
+	data_nasc		 DATE,
+	label_label_id	 VARCHAR(512) NOT NULL,
+	utilizador_user_id VARCHAR(512),
+	PRIMARY KEY(utilizador_user_id)
+);
+
+CREATE TABLE label (
+	label_id VARCHAR(512),
+	morada	 VARCHAR(512),
+	PRIMARY KEY(label_id)
+);
+
+CREATE TABLE pre_paid (
+	pre_paid_id			 VARCHAR(512),
+	valor				 INTEGER,
+	expiration_date			 DATE,
+	customer_id			 VARCHAR(512) DEFAULT 'novo',
+	administrador_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(pre_paid_id)
+);
+
+CREATE TABLE album (
+	album_id			 VARCHAR(512),
+	album_name		 VARCHAR(512),
+	duracao			 VARCHAR(512),
+	pub_data			 DATE,
+	artista_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(album_id)
+);
+
+CREATE TABLE album_track (
+	musica_ismn	 VARCHAR(512) NOT NULL,
+	album_album_id VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE comentario (
+	comment_id			 VARCHAR(512),
+	comment			 VARCHAR(512),
+	comment_pai			 VARCHAR(512),
+	musica_ismn			 VARCHAR(512) NOT NULL,
+	consumidor_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(comment_id)
+);
+
+CREATE TABLE comentario_pai (
+	comment_id			 VARCHAR(512),
+	comment			 VARCHAR(512),
+	musica_ismn			 VARCHAR(512) NOT NULL,
+	consumidor_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(comment_id)
+);
+
+CREATE TABLE historico_stream (
+	data				 DATE,
+	musica_ismn			 VARCHAR(512) NOT NULL,
+	consumidor_utilizador_user_id VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE historico_sub (
+	data_compra			 DATE,
+	saldo_na_data		 VARCHAR(512),
+	saldo_pos_compra		 VARCHAR(512),
+	sub_period			 VARCHAR(512),
+	sub_id			 VARCHAR(512),
+	consumidor_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(sub_id)
+);
+
+CREATE TABLE musica (
+	ismn			 VARCHAR(512),
+	duracao			 INTEGER,
+	pub_data			 DATE,
+	genero			 VARCHAR(512),
+	label_id			 VARCHAR(512),
+	titulo			 VARCHAR(512),
+	audio			 VARCHAR(512),
+	streams			 INTEGER DEFAULT 0,
+	album_id			 VARCHAR(512) DEFAULT 'single',
+	artista_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(ismn)
+);
+
+CREATE TABLE outros_artistas (
+	artista_nome		 VARCHAR(512),
+	musica_nome		 VARCHAR(512),
+	artista_utilizador_user_id VARCHAR(512) NOT NULL,
+	musica_ismn		 VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE playlist (
+	playlist_id			 VARCHAR(512),
+	titulo			 VARCHAR(512),
+	duracao			 VARCHAR(512),
+	descricao			 VARCHAR(512),
+	visibility			 VARCHAR(512),
+	consumidor_utilizador_user_id VARCHAR(512) NOT NULL,
+	PRIMARY KEY(playlist_id)
+);
+
+CREATE TABLE playlist_track (
+	playlist_playlist_id VARCHAR(512) NOT NULL,
+	musica_ismn		 VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE top10_playlist (
+	streams_last_month		 VARCHAR(512),
+	musica_ismn			 VARCHAR(512) NOT NULL,
+	consumidor_utilizador_user_id VARCHAR(512) NOT NULL
+);
+
+CREATE TABLE sub_data (
+	pre_paid_pre_paid_id VARCHAR(512) NOT NULL,
+	historico_sub_sub_id VARCHAR(512) NOT NULL
+);
+
+ALTER TABLE administrador ADD CONSTRAINT administrador_fk1 FOREIGN KEY (utilizador_user_id) REFERENCES utilizador(user_id);
+ALTER TABLE consumidor ADD CONSTRAINT consumidor_fk1 FOREIGN KEY (utilizador_user_id) REFERENCES utilizador(user_id);
+ALTER TABLE artista ADD CONSTRAINT artista_fk1 FOREIGN KEY (label_label_id) REFERENCES label(label_id);
+ALTER TABLE artista ADD CONSTRAINT artista_fk2 FOREIGN KEY (utilizador_user_id) REFERENCES utilizador(user_id);
+ALTER TABLE pre_paid ADD CONSTRAINT pre_paid_fk1 FOREIGN KEY (administrador_utilizador_user_id) REFERENCES administrador(utilizador_user_id);
+ALTER TABLE album ADD CONSTRAINT album_fk1 FOREIGN KEY (artista_utilizador_user_id) REFERENCES artista(utilizador_user_id);
+ALTER TABLE album_track ADD CONSTRAINT album_track_fk1 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE album_track ADD CONSTRAINT album_track_fk2 FOREIGN KEY (album_album_id) REFERENCES album(album_id);
+ALTER TABLE comentario ADD CONSTRAINT comentario_fk1 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE comentario ADD CONSTRAINT comentario_fk2 FOREIGN KEY (consumidor_utilizador_user_id) REFERENCES consumidor(utilizador_user_id);
+ALTER TABLE comentario_pai ADD CONSTRAINT comentario_pai_fk1 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE comentario_pai ADD CONSTRAINT comentario_pai_fk2 FOREIGN KEY (consumidor_utilizador_user_id) REFERENCES consumidor(utilizador_user_id);
+ALTER TABLE historico_stream ADD CONSTRAINT historico_stream_fk1 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE historico_stream ADD CONSTRAINT historico_stream_fk2 FOREIGN KEY (consumidor_utilizador_user_id) REFERENCES consumidor(utilizador_user_id);
+ALTER TABLE historico_sub ADD CONSTRAINT historico_sub_fk1 FOREIGN KEY (consumidor_utilizador_user_id) REFERENCES consumidor(utilizador_user_id);
+ALTER TABLE musica ADD CONSTRAINT musica_fk1 FOREIGN KEY (artista_utilizador_user_id) REFERENCES artista(utilizador_user_id);
+ALTER TABLE outros_artistas ADD CONSTRAINT outros_artistas_fk1 FOREIGN KEY (artista_utilizador_user_id) REFERENCES artista(utilizador_user_id);
+ALTER TABLE outros_artistas ADD CONSTRAINT outros_artistas_fk2 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE playlist ADD CONSTRAINT playlist_fk1 FOREIGN KEY (consumidor_utilizador_user_id) REFERENCES consumidor(utilizador_user_id);
+ALTER TABLE playlist_track ADD CONSTRAINT playlist_track_fk1 FOREIGN KEY (playlist_playlist_id) REFERENCES playlist(playlist_id);
+ALTER TABLE playlist_track ADD CONSTRAINT playlist_track_fk2 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE top10_playlist ADD CONSTRAINT top10_playlist_fk1 FOREIGN KEY (musica_ismn) REFERENCES musica(ismn);
+ALTER TABLE top10_playlist ADD CONSTRAINT top10_playlist_fk2 FOREIGN KEY (consumidor_utilizador_user_id) REFERENCES consumidor(utilizador_user_id);
+ALTER TABLE sub_data ADD CONSTRAINT sub_data_fk1 FOREIGN KEY (pre_paid_pre_paid_id) REFERENCES pre_paid(pre_paid_id);
+ALTER TABLE sub_data ADD CONSTRAINT sub_data_fk2 FOREIGN KEY (historico_sub_sub_id) REFERENCES historico_sub(sub_id);
