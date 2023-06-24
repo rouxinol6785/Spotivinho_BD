@@ -1,0 +1,560 @@
+{
+	"info": {
+		"_postman_id": "2946fd11-71e8-4d39-bc31-9c6d776b88cf",
+		"name": "BD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21041951",
+		"_collection_link": "https://planetary-water-862804.postman.co/workspace/projetoBD~8c4501ab-b8a0-430b-a733-1513c1ec094a/collection/21041951-2946fd11-71e8-4d39-bc31-9c6d776b88cf?action=share&creator=21041951&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "user registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"dini\",\r\n    \"email\":\"diniz@gmail.com\",\r\n    \"password\":\"d4\",\r\n    \"nome\": \"Dinis\",\r\n    \"data_nasc\": \"2000-11-14\",\r\n    \"pais\":\"Portugal\",\r\n    \"genero\":\"Non-binary\"\r\n}\r\n\r\n\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/user/registration",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"user",
+						"registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user auth (admin)",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"tiaguito\",\r\n    \"password\" : \"palavrapasse\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/user/auth",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"user",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user auth (consumidor)",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"dini\",\r\n    \"password\" : \"d4\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/user/auth",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"user",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add artista",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"PopSmoke\",\r\n    \"password\" : \"gunaDaAreosa\",\r\n    \"email\" : \"popsmoke@pro.com\",\r\n    \"nome\" : \"Pop Smoke\",\r\n    \"idade\" : \"24\",\r\n    \"genero\" :\"HIP-HOP\",\r\n    \"nib\" : \"323123243\",\r\n    \"pais\" : \"Americaz\",\r\n    \"data_nasc\": \"1999-02-19\",\r\n    \"label_id\" : \"label_id\",\r\n    \"token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRpYWd1aXRvIiwicGFzc3dvcmQiOiJwYWxhdnJhcGFzc2UiLCJwZXJtaXNzYW8iOiJhZG1pbmlzdHJhZG9yIiwidXNlcl9pZCI6InRpYWdvQURNSU4iLCJkdXJhY2FvX3Rva2VuIjoxNjg2ODg3MDQwfQ._etLDJ_e7Ln55GrYJue_EWff6bXKLa6wL6rrSo7TZKU\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/user/artista",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"user",
+						"artista"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user auth (artista)",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\" : \"Ed\",\r\n    \"password\" : \"balalaika\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/user/auth",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"user",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add pre-paid card",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"valor\": \"10\",\r\n    \"expiration_date\": \"2023-06-30\",\r\n    \"quantidade\": \"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/card",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"card"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add song",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"duracao\": \"123\",\r\n    \"pub_data\": \"2023-08-06\",\r\n    \"genero\": \"rock\",\r\n    \"label_id\": \"label_id\",\r\n    \"titulo\": \"iseefire\",\r\n    \"audio\": \"blahblahblah\",\r\n    \"album_album_id\": \"divide\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/song",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"song"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sub premium (month)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"period\" : \"month\",\r\n    \"cards\" : \"4580196825997555\",\r\n    \"token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBlZHJvZCIsInBhc3N3b3JkIjoicGQxMjM0IiwicGVybWlzc2FvIjoiY29uc3VtaWRvciIsInVzZXJfaWQiOiJwZWRyb2Q0NjI2NDgifQ.QLSg46rFRc4qvvC2OCZu6wV4qZ6thmT0w_K79MmWIF4\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/subscription",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add playlist",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"titulo\": \"novsadug\",\r\n    \"tracklist\": \"ismn123,iasd,asdqwe\",\r\n    \"duracao\": \"12342\",\r\n    \"descricao\": \"esta e boa\",\r\n    \"visibility\": \"private\",\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlbG1hbyIsInBhc3N3b3JkIjoicGFsYXZyYWNoYXZlIiwicGVybWlzc2FvIjoiY29uc3VtaWRvciIsInVzZXJfaWQiOiJUZWxtYW8zNTA4NjgifQ.8Kmn8y4Q0Yo7EOSU0CVD8KT8ZL_QI4cEPsceCEzk_mY\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/playlist",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"playlist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comment",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "payload",
+							"value": "{}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"comment\": \"Música bruta! Era pegar tudo e mandar fora\",\r\n    \"token\" : \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRpbmkiLCJwYXNzd29yZCI6ImQ0IiwicGVybWlzc2FvIjoiY29uc3VtaWRvciIsInVzZXJfaWQiOiJkaW5pMzMxNTc0In0.uOJ1KH5uyBV2oZgiwm4dle2SpB2ZFtHEMyN9jBnIVzw\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/comments/asdqwe",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"comments",
+						"asdqwe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "detail artist",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/artista_info/<artist_id>",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"artista_info",
+						"<artist_id>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add album",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"album_id\": \"starvoy\",\r\n    \"tracklist\":\"ismn123,3213,2000-01-30,softcore,label_id,blinding lights,blahblahblag/iasd,321,2009-01-20,rock alternativo,label_id,truly lost it,sdfsdfa\",\r\n    \"titulo\": \"canções de amor e esperança\",\r\n    \"duracao\": \"um soco\",\r\n    \"pub_data\": \"1972-02-22\",\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVkIiwicGFzc3dvcmQiOiJiYWxhbGFpa2EiLCJwZXJtaXNzYW8iOiJhcnRpc3RhIiwidXNlcl9pZCI6ImVkNTU1NzAwIn0.Fun4obrgCyiXeeyDz4x2FOTudaYoqoqvuVUwrxckgQE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/album",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"album"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search song",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "payload",
+							"value": "{}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "token",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/song/<keyword>",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"song",
+						"<keyword>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "monthly report",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/report/<yyyy-mm>",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"report",
+						"<yyyy-mm>"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "play song",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlbG1hbyIsInBhc3N3b3JkIjoicGFsYXZyYWNoYXZlIiwicGVybWlzc2FvIjoiY29uc3VtaWRvciIsInVzZXJfaWQiOiJUZWxtYW8zNTA4NjgifQ.8Kmn8y4Q0Yo7EOSU0CVD8KT8ZL_QI4cEPsceCEzk_mY\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/spotivinho_DB/<song_id>",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"spotivinho_DB",
+						"<song_id>"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
